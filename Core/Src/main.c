@@ -56,6 +56,8 @@
 #define FLASH_N25Q128A_DUMMY_CYCLES		0x0A
 #define FLASH_W25Q128J_DUMMY_CYCLES		0x06
 
+#define CAN_ID_1 0x0A5
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -321,6 +323,17 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
+
+  // TODO: Configure CAN filter to receive inverter data
+  CAN_FilterTypeDef inverterConfig;
+  inverterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
+  inverterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+  inverterConfig.FilterBank = 0;
+  inverterConfig.FilterActivation = ENABLE;
+  inverterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+  inverterConfig.FilterIdHigh = CAN_ID_1 << 5;
+  inverterConfig.FilterIdLow = 0x0000;
+  HAL_CAN_ConfigFilter(&hcan1, &inverterConfig);
 
   /* USER CODE END CAN1_Init 2 */
 
@@ -795,12 +808,28 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
+    // DATA FRAME
+  CAN_RxHeaderTypeDef inverterRxHeader;
+  uint8_t inverterRxData[8];
+
+  //Varaibles to hold inverter data
+  int inverterRpm = 0;
+
   /* Infinite loop */
   for(;;)
   {
-	  // handle canbus reading here
+  // TODO: handle canbus reading here
 
-
+  // may need to enable message interrupts for better performance
+  if (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
+      if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &inverterRxHeader, inverterRxData) == HAL_OK) {
+        // Check for inverter message ID
+        if (inverterRxHeader.StdId == CAN_ID_1) {
+          // Ref page 14 of the CAN protocol document 
+          inverterRpm = (inverterRxData[3] * 256) + inverterRxData[2];
+        }
+      }
+  }
 
 	  osDelay(100);
   }
