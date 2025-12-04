@@ -809,10 +809,12 @@ void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
     // DATA FRAME
+	// this can stay here :)
   CAN_RxHeaderTypeDef inverterRxHeader;
   uint8_t inverterRxData[8];
 
   //Varaibles to hold inverter data
+  // this should be a global with the rest of the received data AFTER you pull it from the array of data
   int inverterRpm = 0;
 
   /* Infinite loop */
@@ -820,16 +822,16 @@ void StartDefaultTask(void *argument)
   {
   // TODO: handle canbus reading here
 
-  // may need to enable message interrupts for better performance
-  if (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
-      if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &inverterRxHeader, inverterRxData) == HAL_OK) {
-        // Check for inverter message ID
-        if (inverterRxHeader.StdId == CAN_ID_1) {
-          // Ref page 14 of the CAN protocol document 
-          inverterRpm = (inverterRxData[3] * 256) + inverterRxData[2];
-        }
-      }
-  }
+	  // may need to enable message interrupts for better performance
+	  if (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
+		  if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &inverterRxHeader, inverterRxData) == HAL_OK) {
+			// Check for inverter message ID
+			if (inverterRxHeader.StdId == CAN_ID_1) {
+			  // Ref page 14 of the CAN protocol document
+			  inverterRpm = (inverterRxData[3] * 256) + inverterRxData[2];
+			}
+		  }
+	  }
 
 	  osDelay(100);
   }
