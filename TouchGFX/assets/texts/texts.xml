@@ -7,7 +7,7 @@
     <TextGroup Id="Group1" />
     <TextGroup Id="Unsorted">
       <Text Id="__SingleUse_7GB0" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; %</Translation>
+        <Translation Language="GB">&lt;&gt;</Translation>
       </Text>
       <Text Id="__SingleUse_I6N0" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">RPM</Translation>
