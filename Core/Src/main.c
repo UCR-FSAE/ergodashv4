@@ -103,6 +103,7 @@ const osThreadAttr_t videoTask_attributes = {
 };
 /* USER CODE BEGIN PV */
 static FMC_SDRAM_CommandTypeDef Command;
+uint8_t RPMValue = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -815,7 +816,6 @@ void StartDefaultTask(void *argument)
 
   //Varaibles to hold inverter data
   // this should be a global with the rest of the received data AFTER you pull it from the array of data
-  int inverterRpm = 0;
 
   /* Infinite loop */
   for(;;)
@@ -828,7 +828,7 @@ void StartDefaultTask(void *argument)
 			// Check for inverter message ID
 			if (inverterRxHeader.StdId == CAN_ID_1) {
 			  // Ref page 14 of the CAN protocol document
-			  inverterRpm = (inverterRxData[3] * 256) + inverterRxData[2];
+			  RPMValue = (inverterRxData[3] * 256) + inverterRxData[2];
 			}
 		  }
 	  }
