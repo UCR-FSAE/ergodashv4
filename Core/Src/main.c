@@ -128,6 +128,15 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 /* USER CODE BEGIN 0 */
 CAN_RxHeaderTypeDef RxHeader; 
 
+// global variables
+uint8_t bms_soc = 0;
+uint16_t inverter_torque = 0;
+uint16_t motor_speed = 0;
+uint8_t pack_soc = 0;
+// inverter commands from CAN
+uint8_t inverter_direction = 0;   // 0 = CW/Reverse, 1 = CCW/Forward
+uint8_t inverter_run = 0;         // 0 = Disabled, 1 = Enabled
+
 /* USER CODE END 0 */
 
 /**
@@ -865,16 +874,16 @@ void StartDefaultTask(void *argument)
 					case 0x202: //BMS
 						uint8_t soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 						break;
-					case 0x1A1: case 0x1A2:
-					case 0x2A1: case 0x2A2:
-					case 0x3A1: case 0x3A2:
-					case 0x4A1: case 0x4A2:
-					case 0x5A1: case 0x5A2:
-					case 0x6A1: case 0x6A2:
-					{
-						uint8_t temp = rxData[0]; //probably? maybe
-						break;
-					}
+					// case 0x1A1: case 0x1A2:  for thermistor, so not needed
+					// case 0x2A1: case 0x2A2:
+					// case 0x3A1: case 0x3A2:
+					// case 0x4A1: case 0x4A2:
+					// case 0x5A1: case 0x5A2:
+					// case 0x6A1: case 0x6A2:
+					// {
+					// 	uint8_t temp = rxData[0]; //probably? maybe
+					// 	break;
+					// }
 					case 0x0C0: //Inverter
 					{
 						uint16_t torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
