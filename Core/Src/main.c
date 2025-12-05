@@ -129,7 +129,7 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 
 // global variables
 uint8_t bms_soc = 0;
-float inverter_torque = 0.0f;
+float inverter_torque = 0.0f; // if want fractional torque
 uint16_t motor_speed = 0;
 uint8_t pack_soc = 0;
 // inverter commands from CAN
