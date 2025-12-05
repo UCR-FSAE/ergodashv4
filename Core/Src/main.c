@@ -126,11 +126,10 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-CAN_RxHeaderTypeDef RxHeader; 
 
 // global variables
 uint8_t bms_soc = 0;
-uint16_t inverter_torque = 0;
+float inverter_torque = 0.0f;
 uint16_t motor_speed = 0;
 uint8_t pack_soc = 0;
 // inverter commands from CAN
@@ -872,7 +871,7 @@ void StartDefaultTask(void *argument)
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
 					case 0x202: //BMS
-						uint8_t soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						bms_soc = rxData[4]; //might be byte 5 instead of byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 						break;
 					// case 0x1A1: case 0x1A2:  for thermistor, so not needed
 					// case 0x2A1: case 0x2A2:
@@ -886,15 +885,23 @@ void StartDefaultTask(void *argument)
 					// }
 					case 0x0C0: //Inverter
 					{
-						uint16_t torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
+            // little-endian: Byte 0 = LSB, Byte 1 = MSH
+						inverter_torque = ((rxData[1] << 8) | rxData[0]) / 10.0f; // sent as a value in N.m. times 10
+            inverter_direction = rxData[4]; // Byte 5
+            inverter_run = rxData[5];  // Byte 6
 						break;
 					}
 					case 0x0A5: //Motor Speed
-						uint16_t speed = rxData[1] | (rxData[2] << 8); //what
+          {
+            // litte-endian: Byte 2 = LSB, Byte 3 = MSB
+						motor_speed = (rxData[3]<<8) | rxData[2]; // RPM
 						break;
+          }
 					case 0x6B0: //state of charge
-						uint8_t pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+          {
+						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 						break;
+          }
 					default:
 					{
 						break;
