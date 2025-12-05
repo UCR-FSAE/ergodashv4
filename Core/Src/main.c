@@ -871,7 +871,7 @@ void StartDefaultTask(void *argument)
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
 					case 0x202: //BMS
-						bms_soc = rxData[4]; //might be byte 5 instead of byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						bms_soc = rxData[4]; // matching what Justin said to CAN protocol, seems like all values already 0-indexed
 						break;
 					// case 0x1A1: case 0x1A2:  for thermistor, so not needed
 					// case 0x2A1: case 0x2A2:
@@ -887,19 +887,24 @@ void StartDefaultTask(void *argument)
 					{
             // little-endian: Byte 0 = LSB, Byte 1 = MSH
 						inverter_torque = ((rxData[1] << 8) | rxData[0]) / 10.0f; // sent as a value in N.m. times 10
-            inverter_direction = rxData[4]; // Byte 5
-            inverter_run = rxData[5];  // Byte 6
+            // rxData[1] << 8: MSB shifted e.g. 1 * 256 = 256
+            // | rxData[0]: OR with LSB e.g. 256 + 44 = 300
+            // / 10.0f actual torque e.g. 300 / 10 = 30 N.m.
+            inverter_direction = rxData[4]; // Byte 4
+            inverter_run = rxData[5];  // Byte 5
 						break;
 					}
 					case 0x0A5: //Motor Speed
           {
             // litte-endian: Byte 2 = LSB, Byte 3 = MSB
 						motor_speed = (rxData[3]<<8) | rxData[2]; // RPM
+            // rxData[3] << 8: MSB shifted e.g. 1 * 256 = 256
+            // | rxData[2]: OR with LSB e.g. 256 + 244 = 500 RPM
 						break;
           }
 					case 0x6B0: //state of charge
           {
-						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						pack_soc = rxData[4]; //byte 4, I think?
 						break;
           }
 					default:
