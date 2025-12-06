@@ -8,6 +8,11 @@ extern void CANPollingRoutine();
 
 */
 
+extern uint8_t temp;
+extern uint16_t torque;
+extern uint16_t speed;
+extern uint8_t pack_soc;
+extern uint8_t soc;
 
 MainScreenView::MainScreenView()
 {
@@ -27,7 +32,7 @@ void MainScreenView::tearDownScreen()
 void MainScreenView::handleTickEvent() {
 	RPMGauge.setValue(RPMValue);
 	RPMText.setValue(RPMValue);
-	torqueCommandGauge.setValue(TorqueValue);
-	SOCText.setValue(SOCValue);
-	SOCBox.setValue(SOCValue);
+	torqueCommandGauge.setValue(torque);
+	SOCText.setValue(soc);
+	SOCBox.setValue(soc);
 }

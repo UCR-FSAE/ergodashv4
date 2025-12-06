@@ -127,7 +127,11 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 CAN_RxHeaderTypeDef RxHeader; 
-
+uint8_t temp;
+uint16_t torque;
+uint16_t speed;
+uint8_t pack_soc;
+uint8_t soc;
 /* USER CODE END 0 */
 
 /**
@@ -863,7 +867,7 @@ void StartDefaultTask(void *argument)
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
 					case 0x202: //BMS
-						uint8_t soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 						break;
 					case 0x1A1: case 0x1A2:
 					case 0x2A1: case 0x2A2:
@@ -872,19 +876,19 @@ void StartDefaultTask(void *argument)
 					case 0x5A1: case 0x5A2:
 					case 0x6A1: case 0x6A2:
 					{
-						uint8_t temp = rxData[0]; //probably? maybe
+						temp = rxData[0]; //probably? maybe
 						break;
 					}
 					case 0x0C0: //Inverter
 					{
-						uint16_t torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
+						torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
 						break;
 					}
 					case 0x0A5: //Motor Speed
-						uint16_t speed = rxData[1] | (rxData[2] << 8); //what
+						speed = rxData[1] | (rxData[2] << 8); //what
 						break;
 					case 0x6B0: //state of charge
-						uint8_t pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 						break;
 					default:
 					{

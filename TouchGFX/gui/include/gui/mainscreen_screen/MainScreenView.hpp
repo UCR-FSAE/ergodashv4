@@ -14,8 +14,6 @@ public:
     virtual void handleTickEvent();
 
     uint32_t RPMValue;
-    uint32_t TorqueValue;
-    uint32_t SOCValue;
 
 
 protected:
