@@ -126,7 +126,14 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-CAN_RxHeaderTypeDef RxHeader; 
+
+// global variables
+uint8_t bms_soc = 0;
+float inverter_torque = 0.0f; // uint16_t if don't fractional torque
+uint16_t motor_speed = 0;
+uint8_t pack_soc = 0;
+uint8_t inverter_direction = 0;   // 0 = CW/Reverse, 1 = CCW/Forward
+uint8_t inverter_run = 0;         // 0 = Disabled, 1 = Enabled
 
 /* USER CODE END 0 */
 
@@ -863,29 +870,42 @@ void StartDefaultTask(void *argument)
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
 					case 0x202: //BMS
-						uint8_t soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						bms_soc = rxData[4]; // matching what Justin said to CAN protocol, seems like all values already 0-indexed
 						break;
-					case 0x1A1: case 0x1A2:
-					case 0x2A1: case 0x2A2:
-					case 0x3A1: case 0x3A2:
-					case 0x4A1: case 0x4A2:
-					case 0x5A1: case 0x5A2:
-					case 0x6A1: case 0x6A2:
-					{
-						uint8_t temp = rxData[0]; //probably? maybe
-						break;
-					}
+					// case 0x1A1: case 0x1A2:  for thermistor, so not needed
+					// case 0x2A1: case 0x2A2:
+					// case 0x3A1: case 0x3A2:
+					// case 0x4A1: case 0x4A2:
+					// case 0x5A1: case 0x5A2:
+					// case 0x6A1: case 0x6A2:
+					// {
+					// 	uint8_t temp = rxData[0]; //probably? maybe
+					// 	break;
+					// }
 					case 0x0C0: //Inverter
 					{
-						uint16_t torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
+            // little-endian: Byte 0 = LSB, Byte 1 = MSH
+						inverter_torque = ((rxData[1] << 8) | rxData[0]) / 10.0f; // sent as a value in N.m. times 10
+            // rxData[1] << 8: MSB shifted e.g. 1 * 256 = 256
+            // | rxData[0]: OR with LSB e.g. 256 + 44 = 300
+            // / 10.0f actual torque e.g. 300 / 10 = 30 N.m.
+            inverter_direction = rxData[4]; // Byte 4
+            inverter_run = rxData[5];  // Byte 5
 						break;
 					}
 					case 0x0A5: //Motor Speed
-						uint16_t speed = rxData[1] | (rxData[2] << 8); //what
+          {
+            // litte-endian: Byte 2 = LSB, Byte 3 = MSB
+						motor_speed = (rxData[3]<<8) | rxData[2]; // RPM
+            // rxData[3] << 8: MSB shifted e.g. 1 * 256 = 256
+            // | rxData[2]: OR with LSB e.g. 256 + 244 = 500 RPM
 						break;
+          }
 					case 0x6B0: //state of charge
-						uint8_t pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+          {
+						pack_soc = rxData[4]; //byte 4, I think?
 						break;
+          }
 					default:
 					{
 						break;
