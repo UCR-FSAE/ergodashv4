@@ -30,6 +30,14 @@ void MainScreenView::tearDownScreen()
 }
 
 void MainScreenView::handleTickEvent() {
+
+	if (soc > 20){
+		SOCBox.setColor(0x00FF00); // Green'
+	}
+	if (soc <= 20){
+		SOCBox.setColor(0xFF0000); // Red
+	}
+	SOCBox.invalidate();
 	RPMGauge.setValue(speed); //used to be RPMValue, changed to test speed
 	RPMText.setValue(speed);  //used to be RPMValue
 	torqueCommandGauge.setValue(torque);
