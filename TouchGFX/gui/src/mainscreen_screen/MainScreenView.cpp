@@ -7,7 +7,12 @@ extern osSemaphoreId_t CANDataReadySemHandle;
 extern void CANPollingRoutine();
 
 */
-extern uint8_t RPMValue;
+
+extern uint8_t temp;
+extern uint16_t torque;
+extern uint16_t speed;
+extern uint8_t pack_soc;
+extern uint8_t soc;
 
 MainScreenView::MainScreenView()
 {
@@ -25,9 +30,9 @@ void MainScreenView::tearDownScreen()
 }
 
 void MainScreenView::handleTickEvent() {
-	RPMGauge.setValue(RPMValue);
-	RPMText.setValue(RPMValue);
-	torqueCommandGauge.setValue(TorqueValue);
-	SOCText.setValue(SOCValue);
-	SOCBox.setValue(SOCValue);
+	RPMGauge.setValue(speed); //used to be RPMValue, changed to test speed
+	RPMText.setValue(speed);  //used to be RPMValue
+	torqueCommandGauge.setValue(torque);
+	SOCText.setValue(soc);
+	SOCBox.setValue(soc);
 }

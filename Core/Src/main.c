@@ -56,8 +56,6 @@
 #define FLASH_N25Q128A_DUMMY_CYCLES		0x0A
 #define FLASH_W25Q128J_DUMMY_CYCLES		0x06
 
-#define CAN_ID_1 0x0A5
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -103,7 +101,6 @@ const osThreadAttr_t videoTask_attributes = {
 };
 /* USER CODE BEGIN PV */
 static FMC_SDRAM_CommandTypeDef Command;
-uint8_t RPMValue = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -129,7 +126,12 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+CAN_RxHeaderTypeDef RxHeader; 
+uint8_t temp;
+uint16_t torque;
+uint16_t speed;
+uint8_t pack_soc;
+uint8_t soc;
 /* USER CODE END 0 */
 
 /**
@@ -184,6 +186,7 @@ int main(void)
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
+  HAL_CAN_Start(&hcan1);
 
   /* USER CODE END 2 */
 
@@ -324,18 +327,63 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
+  CAN_FilterTypeDef filterConfig;
 
-  // TODO: Configure CAN filter to receive inverter data
-  CAN_FilterTypeDef inverterConfig;
-  inverterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
-  inverterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
-  inverterConfig.FilterBank = 0;
-  inverterConfig.FilterActivation = ENABLE;
-  inverterConfig.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-  inverterConfig.FilterIdHigh = CAN_ID_1 << 5;
-  inverterConfig.FilterIdLow = 0x0000;
-  HAL_CAN_ConfigFilter(&hcan1, &inverterConfig);
 
+  filterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
+  filterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+  filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+  filterConfig.FilterActivation = ENABLE;
+
+//filter bank 0: BMS + Thermistor 1
+  filterConfig.FilterBank = 0; 
+  filterConfig.FilterIdHigh = 0x202 << 5;      // BMS
+  filterConfig.FilterIdLow = 0x1A1 << 5;		//Thermistor 1
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 1: Thermistor 2 + 3
+  filterConfig.FilterBank = 1; 
+  filterConfig.FilterIdHigh = 0x1A2 << 5;      // 2
+  filterConfig.FilterIdLow = 0x2A1 << 5;		//Thermistor 3
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+	
+//filter bank 2: Thermistor 4 + 5
+  filterConfig.FilterBank = 2; 
+  filterConfig.FilterIdHigh = 0x2A2 << 5;      // 4
+  filterConfig.FilterIdLow = 0x3A1 << 5;		//Thermistor 5
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 3: Thermistor 6 + 7
+  filterConfig.FilterBank = 3; 
+  filterConfig.FilterIdHigh = 0x3A2 << 5;      // 6
+  filterConfig.FilterIdLow = 0x4A1 << 5;		//Thermistor 7
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 4: Thermistor 8 + 9
+  filterConfig.FilterBank = 4;  
+  filterConfig.FilterIdHigh = 0x4A2 << 5;      // 8
+  filterConfig.FilterIdLow = 0x5A1 << 5;		//Thermistor 9
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 5: Thermistor 10 + 11
+  filterConfig.FilterBank = 5; 
+  filterConfig.FilterIdHigh = 0x5A2 << 5;      // 10
+  filterConfig.FilterIdLow = 0x6A1 << 5;		//Thermistor 11
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 6: Thermistor 12 + Inverter
+  filterConfig.FilterBank = 6; 
+  filterConfig.FilterIdHigh = 0x6A2 << 5;      // Thermistor 12
+  filterConfig.FilterIdLow = 0xC0 << 5;		// Inverter
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+//filter bank 7: Motor speed + State of charge
+  filterConfig.FilterBank = 7;
+  filterConfig.FilterIdHigh = 0x0A5 << 5;      // Motor speed
+  filterConfig.FilterIdLow = 0x6B0 << 5;		//State of charge
+  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+	
   /* USER CODE END CAN1_Init 2 */
 
 }
@@ -809,29 +857,50 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-    // DATA FRAME
-	// this can stay here :)
-  CAN_RxHeaderTypeDef inverterRxHeader;
-  uint8_t inverterRxData[8];
-
-  //Varaibles to hold inverter data
-  // this should be a global with the rest of the received data AFTER you pull it from the array of data
-
+  CAN_RxHeaderTypeDef rxHeader;
+  uint8_t rxData[8];
+  
   /* Infinite loop */
   for(;;)
   {
-  // TODO: handle canbus reading here
-
-	  // may need to enable message interrupts for better performance
+	  // handle canbus reading here
 	  if (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
-		  if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &inverterRxHeader, inverterRxData) == HAL_OK) {
-			// Check for inverter message ID
-			if (inverterRxHeader.StdId == CAN_ID_1) {
-			  // Ref page 14 of the CAN protocol document
-			  RPMValue = (inverterRxData[3] * 256) + inverterRxData[2];
+			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
+				switch (rxHeader.StdId) {
+					case 0x202: //BMS
+						soc = rxData[3]; //
+						break;
+					case 0x1A1: case 0x1A2:
+					case 0x2A1: case 0x2A2:
+					case 0x3A1: case 0x3A2:
+					case 0x4A1: case 0x4A2:
+					case 0x5A1: case 0x5A2:
+					case 0x6A1: case 0x6A2:
+					{
+						temp = rxData[0]; //probably? maybe
+						break;
+					}
+					case 0x0C0: //Torque Commands
+					{
+            //Pg 14 of CAN protocol doc says torque is bytes 0 and 1
+						torque = rxData[0] + (rxData[1] * 256);
+						break;
+					}
+					case 0x0A5: //Motor Speed
+						speed = rxData[2] + (rxData[3] * 256 ); 
+						break;
+					case 0x6B0: //pack soc
+						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						break;
+					default:
+					{
+						break;
+					}
+				}
 			}
-		  }
 	  }
+	  // giraffe
+	  
 
 	  osDelay(100);
   }
