@@ -7,7 +7,7 @@ extern osSemaphoreId_t CANDataReadySemHandle;
 extern void CANPollingRoutine();
 
 */
-
+extern uint8_t RPMValue;
 
 MainScreenView::MainScreenView()
 {
