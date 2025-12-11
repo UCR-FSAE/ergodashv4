@@ -867,29 +867,35 @@ void StartDefaultTask(void *argument)
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
 					case 0x202: //BMS
-						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+					{
+						soc = rxData[3]; //byte 4? Need to verify necessary bytes to be stored by checking CAN protocol.
 						break;
+					}
 					case 0x1A1: case 0x1A2:
 					case 0x2A1: case 0x2A2:
 					case 0x3A1: case 0x3A2:
 					case 0x4A1: case 0x4A2:
 					case 0x5A1: case 0x5A2:
-					case 0x6A1: case 0x6A2:
+					case 0x6A1: case 0x6A2: //Thermistor
 					{
-						temp = rxData[0]; //probably? maybe
+						temp = rxData[0]; //Need to verify necessary bytes to be stored by checking CAN protocol.
 						break;
 					}
 					case 0x0C0: //Inverter
 					{
-						torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
+						torque = rxData[3] | (rxData[4] << 8); //little endian assembly
 						break;
 					}
 					case 0x0A5: //Motor Speed
-						speed = rxData[1] | (rxData[2] << 8); //what
+					{
+						speed = rxData[1] | (rxData[2] << 8); //little endian assembly. Also need to verify.
 						break;
-					case 0x6B0: //state of charge
-						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+					}
+					case 0x6B0: //State of charge
+					{
+						pack_soc = rxData[3]; //verify
 						break;
+					}
 					default:
 					{
 						break;
@@ -897,7 +903,6 @@ void StartDefaultTask(void *argument)
 				}
 			}
 	  }
-	  // giraffe
 	  
 
 	  osDelay(100);
