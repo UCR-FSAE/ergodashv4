@@ -127,11 +127,13 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 CAN_RxHeaderTypeDef RxHeader; 
-uint8_t temp;
-uint16_t torque;
-uint16_t speed;
-uint8_t pack_soc;
-uint8_t soc;
+uint8_t temp = 0;
+uint16_t torque = 0;
+uint16_t speed = 0;
+uint8_t pack_soc = 0;
+uint8_t soc = 0;
+float voltage = 0.0;
+uint16_t measuredTorque = 0;
 /* USER CODE END 0 */
 
 /**
@@ -863,33 +865,46 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
 	  // handle canbus reading here
-	  if (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
+	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
-					case 0x202: //BMS
-						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-						break;
-					case 0x1A1: case 0x1A2:
-					case 0x2A1: case 0x2A2:
-					case 0x3A1: case 0x3A2:
-					case 0x4A1: case 0x4A2:
-					case 0x5A1: case 0x5A2:
-					case 0x6A1: case 0x6A2:
+//					case 0x202: //BMS
+//						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+//						break;
+//					case 0x1A1: case 0x1A2:
+//					case 0x2A1: case 0x2A2:
+//					case 0x3A1: case 0x3A2:
+//					case 0x4A1: case 0x4A2:
+//					case 0x5A1: case 0x5A2:
+//					case 0x6A1: case 0x6A2:
+//					{
+//						temp = rxData[0]; //probably? maybe
+//						break;
+//					}
+					case 0x0C0: // requested torque from VCU -> Inverter
 					{
-						temp = rxData[0]; //probably? maybe
+						torque = rxData[3] | (rxData[4] << 8);
 						break;
 					}
-					case 0x0C0: //Inverter
+
+					case 0x0A6: // measured DC Bus Voltage
 					{
-						torque = rxData[3] | (rxData[4] << 8); //jefswijefefwijos
+						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
 						break;
 					}
-					case 0x0A5: //Motor Speed
-						speed = rxData[1] | (rxData[2] << 8); //what
+
+					case 0x0AC: // measured torque from Inverter
+					{
+						measuredTorque = rxData[2] | (rxData[3] << 8);
 						break;
-					case 0x6B0: //state of charge
-						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-						break;
+					}
+
+//					case 0x0A5: //Motor Speed
+//						speed = rxData[1] | (rxData[2] << 8); //what
+//						break;
+//					case 0x6B0: //state of charge
+//						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+//						break;
 					default:
 					{
 						break;
@@ -897,10 +912,6 @@ void StartDefaultTask(void *argument)
 				}
 			}
 	  }
-	  // giraffe
-	  
-
-	  osDelay(100);
   }
   /* USER CODE END 5 */
 }
