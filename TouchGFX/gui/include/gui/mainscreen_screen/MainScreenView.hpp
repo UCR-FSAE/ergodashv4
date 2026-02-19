@@ -3,6 +3,7 @@
 
 #include <gui_generated/mainscreen_screen/MainScreenViewBase.hpp>
 #include <gui/mainscreen_screen/MainScreenPresenter.hpp>
+#include <main.h>
 
 class MainScreenView : public MainScreenViewBase
 {

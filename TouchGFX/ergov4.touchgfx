@@ -113,10 +113,10 @@
           },
           {
             "Type": "TextArea",
-            "Name": "ActualTorqueLabel",
+            "Name": "RPMLabel",
             "X": 315,
             "Y": 136,
-            "Width": 141,
+            "Width": 130,
             "Height": 48,
             "LockPosition": true,
             "TextId": "__SingleUse_I6N0",
@@ -130,7 +130,7 @@
           },
           {
             "Type": "TextProgress",
-            "Name": "ActualTorqueText",
+            "Name": "RPMText",
             "X": 298,
             "Y": 165,
             "Width": 175,
@@ -153,7 +153,7 @@
           },
           {
             "Type": "CircleProgress",
-            "Name": "ActualTorqueGauge",
+            "Name": "RPMGauge",
             "X": 290,
             "Y": 82,
             "Width": 190,

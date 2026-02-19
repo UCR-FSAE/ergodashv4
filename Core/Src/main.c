@@ -82,7 +82,7 @@ SDRAM_HandleTypeDef hsdram1;
 osThreadId_t defaultTaskHandle;
 const osThreadAttr_t defaultTask_attributes = {
   .name = "defaultTask",
-  .stack_size = 128 * 4,
+  .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for TouchGFXTask */
@@ -127,13 +127,13 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 CAN_RxHeaderTypeDef RxHeader; 
-uint8_t temp = 0;
-uint16_t torque = 0;
-uint16_t speed = 0;
-uint8_t pack_soc = 0;
-uint8_t soc = 0;
-float voltage = 0.0;
-uint16_t measuredTorque = 0;
+volatile uint8_t temp = 0;
+volatile uint16_t torque = 70;
+volatile uint16_t speed = 0;
+volatile uint8_t pack_soc = 0;
+volatile uint8_t soc = 0;
+volatile float voltage = 0.0;
+volatile uint16_t measuredTorque = 0;
 /* USER CODE END 0 */
 
 /**
@@ -164,7 +164,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  HAL_CAN_Start(&hcan1);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -328,61 +328,71 @@ static void MX_CAN1_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN CAN1_Init 2 */
-  CAN_FilterTypeDef filterConfig;
+  // 1. Zero-initialize the struct to prevent "Ghost" filters
+    CAN_FilterTypeDef filterConfig = {0};
 
+    filterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
+    filterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
+    filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
+    filterConfig.FilterActivation = ENABLE;
 
-  filterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
-  filterConfig.FilterScale = CAN_FILTERSCALE_16BIT;
-  filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
-  filterConfig.FilterActivation = ENABLE;
+    // Bank 0: BMS + Thermistor 1
+    filterConfig.FilterBank = 0;
+    filterConfig.FilterIdHigh = 0x202 << 5;
+    filterConfig.FilterIdLow = 0x1A1 << 5;
+    // Mask fields are 0 (from init), effectively ID 0x000.
+    // It's better to verify they are 0 or use them for more IDs.
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 0: BMS + Thermistor 1
-  filterConfig.FilterBank = 0; 
-  filterConfig.FilterIdHigh = 0x202 << 5;      // BMS
-  filterConfig.FilterIdLow = 0x1A1 << 5;		//Thermistor 1
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 1: Thermistor 2 + 3
+    filterConfig.FilterBank = 1;
+    filterConfig.FilterIdHigh = 0x1A2 << 5;
+    filterConfig.FilterIdLow = 0x2A1 << 5;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 1: Thermistor 2 + 3
-  filterConfig.FilterBank = 1; 
-  filterConfig.FilterIdHigh = 0x1A2 << 5;      // 2
-  filterConfig.FilterIdLow = 0x2A1 << 5;		//Thermistor 3
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-	
-//filter bank 2: Thermistor 4 + 5
-  filterConfig.FilterBank = 2; 
-  filterConfig.FilterIdHigh = 0x2A2 << 5;      // 4
-  filterConfig.FilterIdLow = 0x3A1 << 5;		//Thermistor 5
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 2: Thermistor 4 + 5
+    filterConfig.FilterBank = 2;
+    filterConfig.FilterIdHigh = 0x2A2 << 5;
+    filterConfig.FilterIdLow = 0x3A1 << 5;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 3: Thermistor 6 + 7
-  filterConfig.FilterBank = 3; 
-  filterConfig.FilterIdHigh = 0x3A2 << 5;      // 6
-  filterConfig.FilterIdLow = 0x4A1 << 5;		//Thermistor 7
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 3: Thermistor 6 + 7
+    filterConfig.FilterBank = 3;
+    filterConfig.FilterIdHigh = 0x3A2 << 5;
+    filterConfig.FilterIdLow = 0x4A1 << 5;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 4: Thermistor 8 + 9
-  filterConfig.FilterBank = 4;  
-  filterConfig.FilterIdHigh = 0x4A2 << 5;      // 8
-  filterConfig.FilterIdLow = 0x5A1 << 5;		//Thermistor 9
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 4: Thermistor 8 + 9
+    filterConfig.FilterBank = 4;
+    filterConfig.FilterIdHigh = 0x4A2 << 5;
+    filterConfig.FilterIdLow = 0x5A1 << 5;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 5: Thermistor 10 + 11
-  filterConfig.FilterBank = 5; 
-  filterConfig.FilterIdHigh = 0x5A2 << 5;      // 10
-  filterConfig.FilterIdLow = 0x6A1 << 5;		//Thermistor 11
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 5: Thermistor 10 + 11
+    filterConfig.FilterBank = 5;
+    filterConfig.FilterIdHigh = 0x5A2 << 5;
+    filterConfig.FilterIdLow = 0x6A1 << 5;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 6: Thermistor 12 + Inverter
-  filterConfig.FilterBank = 6; 
-  filterConfig.FilterIdHigh = 0x6A2 << 5;      // Thermistor 12
-  filterConfig.FilterIdLow = 0xC0 << 5;		// Inverter
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // --- BANK 6 FIXED ---
+    // We use the "Mask" slots as IDs 3 and 4 to fit the missing items
+    filterConfig.FilterBank = 6;
+    filterConfig.FilterIdHigh = 0x6A2 << 5;      // Thermistor 12
+    filterConfig.FilterIdLow = 0x0C0 << 5;       // Requested Torque
+    filterConfig.FilterMaskIdHigh = 0x0A6 << 5;  // ADDED: DC Voltage
+    filterConfig.FilterMaskIdLow = 0x0AC << 5;   // ADDED: Measured Torque
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-//filter bank 7: Motor speed + State of charge
-  filterConfig.FilterBank = 7;
-  filterConfig.FilterIdHigh = 0x0A5 << 5;      // Motor speed
-  filterConfig.FilterIdLow = 0x6B0 << 5;		//State of charge
-  HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+    // Bank 7: Motor speed + State of charge
+    filterConfig.FilterBank = 7;
+    filterConfig.FilterIdHigh = 0x0A5 << 5;
+    filterConfig.FilterIdLow = 0x6B0 << 5;
+    // Clear the extra slots for this last bank just in case
+    filterConfig.FilterMaskIdHigh = 0x0000;
+    filterConfig.FilterMaskIdLow = 0x0000;
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
+
+    HAL_CAN_Start(&hcan1);
 
 	
   /* USER CODE END CAN1_Init 2 */
@@ -858,8 +868,8 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-  CAN_RxHeaderTypeDef rxHeader;
-  uint8_t rxData[8];
+    CAN_RxHeaderTypeDef rxHeader;
+    uint8_t rxData[8];
   
   /* Infinite loop */
   for(;;)
@@ -887,17 +897,17 @@ void StartDefaultTask(void *argument)
 						break;
 					}
 
-					case 0x0A6: // measured DC Bus Voltage
-					{
-						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
-						break;
-					}
-
-					case 0x0AC: // measured torque from Inverter
-					{
-						measuredTorque = rxData[2] | (rxData[3] << 8);
-						break;
-					}
+//					case 0x0A6: // measured DC Bus Voltage
+//					{
+//						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+//						break;
+//					}
+//
+//					case 0x0AC: // measured torque from Inverter
+//					{
+//						measuredTorque = rxData[2] | (rxData[3] << 8);
+//						break;
+//					}
 
 //					case 0x0A5: //Motor Speed
 //						speed = rxData[1] | (rxData[2] << 8); //what
@@ -905,13 +915,11 @@ void StartDefaultTask(void *argument)
 //					case 0x6B0: //state of charge
 //						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 //						break;
-					default:
-					{
-						break;
-					}
 				}
 			}
+
 	  }
+	  osDelay(5);
   }
   /* USER CODE END 5 */
 }

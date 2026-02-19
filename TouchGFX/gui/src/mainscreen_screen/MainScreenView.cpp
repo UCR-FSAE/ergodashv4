@@ -7,13 +7,14 @@ extern osSemaphoreId_t CANDataReadySemHandle;
 extern void CANPollingRoutine();
 
 */
-
-extern uint8_t temp;
-extern uint16_t torque;
-extern uint16_t speed;
-extern uint8_t pack_soc;
-extern uint8_t soc;
-extern float voltage;
+extern CAN_HandleTypeDef hcan1;
+extern volatile uint8_t temp;
+extern volatile uint16_t torque;
+extern volatile uint16_t measuredTorque;
+extern volatile uint16_t speed;
+extern volatile uint8_t pack_soc;
+extern volatile uint8_t soc;
+extern volatile float voltage;
 
 MainScreenView::MainScreenView()
 {
@@ -38,4 +39,12 @@ void MainScreenView::handleTickEvent() {
 	SOCText.setValue(soc);
 	SOCBox.setValue(soc);
 	DCBusVoltageProgess.setValue(voltage);
+
+	ActualTorqueText.invalidate();
+	ActualTorqueGauge.invalidate();
+	torqueCommandGauge.invalidate();
+	CommandedTorqueText.invalidate();
+	SOCText.invalidate();
+	SOCBox.invalidate();
+	DCBusVoltageProgess.invalidate();
 }
