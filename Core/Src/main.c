@@ -392,8 +392,6 @@ static void MX_CAN1_Init(void)
     filterConfig.FilterIdLow = 0x6B0 << 5; // State of Charge
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-    HAL_CAN_Start(&hcan1);
-
 	
   /* USER CODE END CAN1_Init 2 */
 
