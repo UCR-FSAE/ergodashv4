@@ -164,7 +164,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  HAL_CAN_Start(&hcan1);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -188,7 +187,7 @@ int main(void)
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
-
+  HAL_CAN_Start(&hcan1);
   /* USER CODE END 2 */
 
   /* Init scheduler */

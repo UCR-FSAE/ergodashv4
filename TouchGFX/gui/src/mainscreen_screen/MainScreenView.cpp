@@ -32,19 +32,20 @@ void MainScreenView::tearDownScreen()
 }
 
 void MainScreenView::handleTickEvent() {
-	ActualTorqueText.setValue(RPMValue);
-	ActualTorqueGauge.setValue(RPMValue);
+	//ActualTorqueText.setValue(RPMValue);
+	RPMText.setValue(RPMValue);
+	RPMGauge.setValue(RPMValue);
 	torqueCommandGauge.setValue(torque);
-	CommandedTorqueText.setValue(torque);
+//	CommandedTorqueLabel.setValue(torque);
 	SOCText.setValue(soc);
 	SOCBox.setValue(soc);
-	DCBusVoltageProgess.setValue(voltage);
+	//DCBusVoltageProgess.setValue(voltage);
 
-	ActualTorqueText.invalidate();
-	ActualTorqueGauge.invalidate();
+	RPMText.invalidate();
+	RPMGauge.invalidate();
 	torqueCommandGauge.invalidate();
-	CommandedTorqueText.invalidate();
+//	CommandedTorqueLabel.invalidate();
 	SOCText.invalidate();
 	SOCBox.invalidate();
-	DCBusVoltageProgess.invalidate();
+	//DCBusVoltageProgess.invalidate();
 }
