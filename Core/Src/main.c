@@ -101,6 +101,7 @@ const osThreadAttr_t videoTask_attributes = {
 };
 /* USER CODE BEGIN PV */
 static FMC_SDRAM_CommandTypeDef Command;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -134,6 +135,14 @@ volatile uint8_t pack_soc = 0;
 volatile uint8_t soc = 0;
 volatile float voltage = 0.0;
 volatile uint16_t measuredTorque = 0;
+// Transmit Loop back stuff
+CAN_TxHeaderTypeDef   TxHeader; /* Header containing the information of the transmitted frame */
+uint8_t               TxData[8] = {0};  /* Buffer of the data to send */
+uint32_t              TxMailbox;  /* The number of the mail box that transmitted the Tx message */
+// Moved rx stuff here
+CAN_RxHeaderTypeDef rxHeader;
+uint8_t rxData[8];
+
 /* USER CODE END 0 */
 
 /**
@@ -187,6 +196,7 @@ int main(void)
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
+  HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
   HAL_CAN_Start(&hcan1);
   /* USER CODE END 2 */
 
@@ -312,7 +322,7 @@ static void MX_CAN1_Init(void)
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 27;
-  hcan1.Init.Mode = CAN_MODE_NORMAL;
+  hcan1.Init.Mode = CAN_MODE_LOOPBACK;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_2TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
@@ -391,7 +401,14 @@ static void MX_CAN1_Init(void)
     filterConfig.FilterIdLow = 0x6B0 << 5; // State of Charge
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-	
+    // Sending MSGs for loop back
+    TxHeader.StdId = 0x0C0;
+    TxHeader.RTR = CAN_RTR_DATA;
+    TxHeader.IDE = CAN_ID_STD;
+    TxHeader.DLC = 8;
+    TxHeader.TransmitGlobalTime = DISABLE;
+    TxData[3] = 0x0;
+    TxData[4] = 0x0;
   /* USER CODE END CAN1_Init 2 */
 
 }
@@ -791,6 +808,15 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *CanHandle){
+		  if (HAL_CAN_GetRxMessage(CanHandle, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK){
+			  switch (rxHeader.StdId) {
+			  case 0x0C0:
+				  torque = rxData[3] | (rxData[4] << 8);
+				  break;
+			  }
+		  }
+	  }
 
 // Read manufacturer ID of external QSPI flash
 void GetManufacturerId (uint8_t *manufacturer_id)
@@ -865,56 +891,19 @@ void EnableMemoryMappedMode(uint8_t manufacturer_id)
 void StartDefaultTask(void *argument)
 {
   /* USER CODE BEGIN 5 */
-    CAN_RxHeaderTypeDef rxHeader;
-    uint8_t rxData[8];
-  
+	//moved rx stuff to private variables
   /* Infinite loop */
   for(;;)
   {
-	  // handle canbus reading here
-	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
-			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
-				switch (rxHeader.StdId) {
-//					case 0x202: //BMS
-//						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
-//					case 0x1A1: case 0x1A2:
-//					case 0x2A1: case 0x2A2:
-//					case 0x3A1: case 0x3A2:
-//					case 0x4A1: case 0x4A2:
-//					case 0x5A1: case 0x5A2:
-//					case 0x6A1: case 0x6A2:
-//					{
-//						temp = rxData[0]; //probably? maybe
-//						break;
-//					}
-					case 0x0C0: // requested torque from VCU -> Inverter
-					{
-						torque = rxData[3] | (rxData[4] << 8);
-						break;
-					}
-
-//					case 0x0A6: // measured DC Bus Voltage
-//					{
-//						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
-//						break;
-//					}
-//
-//					case 0x0AC: // measured torque from Inverter
-//					{
-//						measuredTorque = rxData[2] | (rxData[3] << 8);
-//						break;
-//					}
-
-//					case 0x0A5: //Motor Speed
-//						speed = rxData[1] | (rxData[2] << 8); //what
-//						break;
-//					case 0x6B0: //state of charge
-//						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
-				}
-			}
-
+	  // handle CAN Bus reading here
+	  // having interrupt in here gives warning / doesn't work
+	  /* It's mandatory to look for a free Tx mail box */
+	  TxData[3] ++;
+	  while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) == 0); /* Wait till a Tx mailbox is free. Using while loop instead of HAL_Delay() */
+	  if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
+	  {
+		  /* Transmission request Error */
+		  Error_Handler();
 	  }
 	  osDelay(5);
   }

@@ -36,6 +36,7 @@ void MainScreenView::handleTickEvent() {
 	RPMText.setValue(RPMValue);
 	RPMGauge.setValue(RPMValue);
 	torqueCommandGauge.setValue(torque);
+	CommandedTorqueText.setValue(torque);
 //	CommandedTorqueLabel.setValue(torque);
 	SOCText.setValue(soc);
 	SOCBox.setValue(soc);
@@ -44,6 +45,7 @@ void MainScreenView::handleTickEvent() {
 	RPMText.invalidate();
 	RPMGauge.invalidate();
 	torqueCommandGauge.invalidate();
+	CommandedTorqueText.invalidate();
 //	CommandedTorqueLabel.invalidate();
 	SOCText.invalidate();
 	SOCBox.invalidate();
