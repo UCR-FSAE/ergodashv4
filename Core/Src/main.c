@@ -135,10 +135,6 @@ volatile uint8_t pack_soc = 0;
 volatile uint8_t soc = 0;
 volatile float voltage = 0.0;
 volatile uint16_t measuredTorque = 0;
-// Transmit Loop back stuff
-CAN_TxHeaderTypeDef   TxHeader; /* Header containing the information of the transmitted frame */
-uint8_t               TxData[8] = {0};  /* Buffer of the data to send */
-uint32_t              TxMailbox;  /* The number of the mail box that transmitted the Tx message */
 // Moved rx stuff here
 CAN_RxHeaderTypeDef rxHeader;
 uint8_t rxData[8];
@@ -322,7 +318,7 @@ static void MX_CAN1_Init(void)
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 27;
-  hcan1.Init.Mode = CAN_MODE_LOOPBACK;
+  hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_2TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_1TQ;
@@ -400,15 +396,6 @@ static void MX_CAN1_Init(void)
     filterConfig.FilterIdHigh = 0x0A5 << 5; // Motor Speed
     filterConfig.FilterIdLow = 0x6B0 << 5; // State of Charge
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Sending MSGs for loop back
-    TxHeader.StdId = 0x0C0;
-    TxHeader.RTR = CAN_RTR_DATA;
-    TxHeader.IDE = CAN_ID_STD;
-    TxHeader.DLC = 8;
-    TxHeader.TransmitGlobalTime = DISABLE;
-    TxData[3] = 0x0;
-    TxData[4] = 0x0;
   /* USER CODE END CAN1_Init 2 */
 
 }
@@ -897,15 +884,6 @@ void StartDefaultTask(void *argument)
   {
 	  // handle CAN Bus reading here
 	  // having interrupt in here gives warning / doesn't work
-	  /* It's mandatory to look for a free Tx mail box */
-	  TxData[3] ++;
-	  while(HAL_CAN_GetTxMailboxesFreeLevel(&hcan1) == 0); /* Wait till a Tx mailbox is free. Using while loop instead of HAL_Delay() */
-	  if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK)
-	  {
-		  /* Transmission request Error */
-		  Error_Handler();
-	  }
-	  osDelay(5);
   }
   /* USER CODE END 5 */
 }

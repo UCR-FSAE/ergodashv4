@@ -86,7 +86,7 @@
             "IndicatorPositionY": 10,
             "IndicatorPositionWidth": 150,
             "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
+            "ProgressRangeMax": 1000,
             "ProgressInitialValue": 60
           },
           {
