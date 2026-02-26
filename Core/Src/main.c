@@ -890,15 +890,15 @@ void StartDefaultTask(void *argument)
 //					}
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
-						torque = rxData[3] | (rxData[4] << 8);
+						torque = rxData[0] | (rxData[1] << 8);
 						break;
 					}
 
-//					case 0x0A6: // measured DC Bus Voltage
-//					{
-//						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
-//						break;
-//					}
+					case 0x0A6: // measured DC Bus Voltage
+					{
+						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						break;
+					}
 //
 //					case 0x0AC: // measured torque from Inverter
 //					{
@@ -906,9 +906,10 @@ void StartDefaultTask(void *argument)
 //						break;
 //					}
 
-//					case 0x0A5: //Motor Speed
-//						speed = rxData[1] | (rxData[2] << 8); //what
-//						break;
+					case 0x0A5: //Motor Speed
+						speed = rxData[2] | (rxData[3] << 8);
+						break;
+
 //					case 0x6B0: //state of charge
 //						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 //						break;

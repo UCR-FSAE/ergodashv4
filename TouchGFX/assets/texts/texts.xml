@@ -19,7 +19,7 @@
         <Translation Language="GB">&lt;&gt; NM</Translation>
       </Text>
       <Text Id="__SingleUse_I6N0" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">ActualTorque&#10;</Translation>
+        <Translation Language="GB">RPM&#10;</Translation>
       </Text>
       <Text Id="__SingleUse_UM3I" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">Commanded&#10;Torque</Translation>

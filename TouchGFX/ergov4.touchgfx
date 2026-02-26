@@ -114,11 +114,10 @@
           {
             "Type": "TextArea",
             "Name": "RPMLabel",
-            "X": 315,
+            "X": 361,
             "Y": 136,
-            "Width": 130,
+            "Width": 43,
             "Height": 48,
-            "LockPosition": true,
             "TextId": "__SingleUse_I6N0",
             "TextRotation": "0",
             "Color": {
