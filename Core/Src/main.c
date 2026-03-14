@@ -134,6 +134,7 @@ volatile uint8_t pack_soc = 0;
 volatile uint8_t soc = 0;
 volatile float voltage = 0.0;
 volatile uint16_t measuredTorque = 0;
+volatile uint16_t seconds = 0;
 /* USER CODE END 0 */
 
 /**
@@ -867,10 +868,13 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN 5 */
     CAN_RxHeaderTypeDef rxHeader;
     uint8_t rxData[8];
-  
+    uint32_t lastTick = HAL_GetTick();
   /* Infinite loop */
   for(;;)
   {
+	  if(HAL_GetTick() - lastTick >= 1000){
+	      	seconds++;
+	      }
 	  // handle canbus reading here
 	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {

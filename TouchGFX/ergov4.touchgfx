@@ -179,7 +179,6 @@
             "Name": "RuntimeText",
             "Width": 175,
             "Height": 50,
-            "Visible": false,
             "LockPosition": true,
             "TextId": "__SingleUse_LWLR",
             "Color": {
@@ -193,8 +192,7 @@
             "IndicatorPositionY": 10,
             "IndicatorPositionWidth": 150,
             "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 1000,
-            "ProgressInitialValue": 60
+            "ProgressRangeMax": 32767
           },
           {
             "Type": "TextProgress",
@@ -217,9 +215,189 @@
             "IndicatorPositionHeight": 30,
             "ProgressRangeMax": 100,
             "ProgressInitialValue": 60
+          },
+          {
+            "Type": "ButtonWithLabel",
+            "Name": "DebugButton",
+            "X": 185,
+            "Width": 110,
+            "Height": 50,
+            "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_50_tiny_rounded_inactive.png",
+            "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_50_tiny_rounded_inactive.png",
+            "TextId": "__SingleUse_E953",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Preset": "alternate_theme\\presets\\button\\regular\\height_50\\tiny_rounded_inactive.json"
           }
         ],
-        "Interactions": []
+        "Interactions": [
+          {
+            "InteractionName": "Interaction1",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "DebugButton"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "DebugScreen"
+            }
+          }
+        ]
+      },
+      {
+        "Name": "DebugScreen",
+        "Components": [
+          {
+            "Type": "TextProgress",
+            "Name": "CANsignal2",
+            "Y": 50,
+            "Width": 175,
+            "Height": 50,
+            "LockPosition": true,
+            "TextId": "__SingleUse_YAFT",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+            "IndicatorPositionX": 12,
+            "IndicatorPositionY": 10,
+            "IndicatorPositionWidth": 150,
+            "IndicatorPositionHeight": 30,
+            "ProgressRangeMax": 1000
+          },
+          {
+            "Type": "TextProgress",
+            "Name": "CANsignal1",
+            "Width": 175,
+            "Height": 50,
+            "LockPosition": true,
+            "TextId": "__SingleUse_T7YY",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+            "IndicatorPositionX": 12,
+            "IndicatorPositionY": 10,
+            "IndicatorPositionWidth": 150,
+            "IndicatorPositionHeight": 30,
+            "ProgressRangeMax": 1000
+          },
+          {
+            "Type": "TextProgress",
+            "Name": "CANsignal5",
+            "Y": 200,
+            "Width": 175,
+            "Height": 50,
+            "LockPosition": true,
+            "TextId": "__SingleUse_RQPJ",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+            "IndicatorPositionX": 12,
+            "IndicatorPositionY": 10,
+            "IndicatorPositionWidth": 150,
+            "IndicatorPositionHeight": 30,
+            "ProgressRangeMax": 1000
+          },
+          {
+            "Type": "TextProgress",
+            "Name": "CANsignal3",
+            "Y": 100,
+            "Width": 175,
+            "Height": 50,
+            "LockPosition": true,
+            "TextId": "__SingleUse_VVF3",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+            "IndicatorPositionX": 12,
+            "IndicatorPositionY": 10,
+            "IndicatorPositionWidth": 150,
+            "IndicatorPositionHeight": 30,
+            "ProgressRangeMax": 1000
+          },
+          {
+            "Type": "TextProgress",
+            "Name": "CANsignal4",
+            "Y": 150,
+            "Width": 175,
+            "Height": 50,
+            "LockPosition": true,
+            "TextId": "__SingleUse_KD2P",
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+            "IndicatorPositionX": 12,
+            "IndicatorPositionY": 10,
+            "IndicatorPositionWidth": 150,
+            "IndicatorPositionHeight": 30,
+            "ProgressRangeMax": 1000
+          },
+          {
+            "Type": "ButtonWithLabel",
+            "Name": "ExitButton",
+            "X": 185,
+            "Width": 110,
+            "Height": 50,
+            "Pressed": "__generated\\alternate_theme_images_widgets_button_regular_height_50_tiny_rounded_inactive.png",
+            "Released": "__generated\\alternate_theme_images_widgets_button_regular_height_50_tiny_rounded_inactive.png",
+            "TextId": "__SingleUse_IM20",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Preset": "alternate_theme\\presets\\button\\regular\\height_50\\tiny_rounded_inactive.json"
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "Interaction1",
+            "Trigger": {
+              "Type": "TriggerClicked",
+              "TriggerComponent": "ExitButton"
+            },
+            "Action": {
+              "Type": "ActionGotoScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "MainScreen"
+            }
+          }
+        ]
       }
     ],
     "CustomContainerDefinitions": [],

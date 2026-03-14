@@ -15,6 +15,7 @@ extern volatile uint16_t speed;
 extern volatile uint8_t pack_soc;
 extern volatile uint8_t soc;
 extern volatile float voltage;
+extern volatile uint16_t seconds;
 
 MainScreenView::MainScreenView()
 {
@@ -48,4 +49,6 @@ void MainScreenView::handleTickEvent() {
 	//SOCText.invalidate();
 	//SOCBox.invalidate();
 	DCBusVoltageProgess.invalidate();
+	RuntimeText.setValue(seconds);
+	RuntimeText.invalidate();
 }
