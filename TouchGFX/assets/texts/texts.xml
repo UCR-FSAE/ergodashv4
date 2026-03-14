@@ -6,6 +6,27 @@
   <Texts>
     <TextGroup Id="Group1" />
     <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_YAFT" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt; </Translation>
+      </Text>
+      <Text Id="__SingleUse_KD2P" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt; </Translation>
+      </Text>
+      <Text Id="__SingleUse_VVF3" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt; </Translation>
+      </Text>
+      <Text Id="__SingleUse_RQPJ" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt; </Translation>
+      </Text>
+      <Text Id="__SingleUse_T7YY" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt; </Translation>
+      </Text>
+      <Text Id="__SingleUse_IM20" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">Exit</Translation>
+      </Text>
+      <Text Id="__SingleUse_E953" Alignment="Center" TypographyId="Default">
+        <Translation Language="GB">Debug</Translation>
+      </Text>
       <Text Id="__SingleUse_4YUZ" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">&lt;&gt; NM</Translation>
       </Text>
@@ -19,7 +40,7 @@
         <Translation Language="GB">&lt;&gt; NM</Translation>
       </Text>
       <Text Id="__SingleUse_I6N0" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">ActualTorque&#10;</Translation>
+        <Translation Language="GB">RPM&#10;</Translation>
       </Text>
       <Text Id="__SingleUse_UM3I" Alignment="Center" TypographyId="Default">
         <Translation Language="GB">Commanded&#10;Torque</Translation>
