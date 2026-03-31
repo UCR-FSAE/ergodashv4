@@ -4,34 +4,42 @@
     <Language Id="GB" />
   </Languages>
   <Texts>
-    <TextGroup Id="Group1" />
+    <TextGroup Id="Group1">
+      <Text Id="ResourceId1" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">New Text</Translation>
+      </Text>
+    </TextGroup>
     <TextGroup Id="Unsorted">
-      <Text Id="__SingleUse_4YUZ" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; NM</Translation>
+      <Text Id="__SingleUse_E6A4" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">BMSSOC</Translation>
       </Text>
-      <Text Id="__SingleUse_YRPZ" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; A</Translation>
+      <Text Id="__SingleUse_XU7X" Alignment="Right" TypographyId="Medium">
+        <Translation Language="GB">BMSAMP: &lt;&gt; A</Translation>
       </Text>
-      <Text Id="__SingleUse_LWLR" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; </Translation>
+      <Text Id="__SingleUse_T9S5" Alignment="Right" TypographyId="Medium">
+        <Translation Language="GB">PACKAMP: &lt;&gt; A</Translation>
       </Text>
-      <Text Id="__SingleUse_7GB0" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; NM</Translation>
+      <Text Id="__SingleUse_PAWM" Alignment="Right" TypographyId="Medium">
+        <Translation Language="GB">MTRTMP: &lt;&gt; C</Translation>
       </Text>
-      <Text Id="__SingleUse_I6N0" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">ActualTorque&#10;</Translation>
+      <Text Id="__SingleUse_2NOF" Alignment="Right" TypographyId="Medium">
+        <Translation Language="GB">PACKTMP: &lt;&gt; C</Translation>
       </Text>
-      <Text Id="__SingleUse_UM3I" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">Commanded&#10;Torque</Translation>
+      <Text Id="__SingleUse_2JWP" Alignment="Left" TypographyId="Default">
+        <Translation Language="GB">&lt;&gt;</Translation>
       </Text>
-      <Text Id="__SingleUse_SBPY" Alignment="Center" TypographyId="Default">
-        <Translation Language="GB">&lt;&gt; %</Translation>
+      <Text Id="__SingleUse_HO6R" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">CMD: &lt;&gt; NM</Translation>
+      </Text>
+      <Text Id="__SingleUse_TC47" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">ACT: &lt;&gt; NM</Translation>
       </Text>
     </TextGroup>
   </Texts>
   <Typographies>
-    <Typography Id="Default" Font="verdana.ttf" Size="20" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WidgetWildcardCharacters="0123456789." />
+    <Typography Id="Default" Font="verdana.ttf" Size="20" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WidgetWildcardCharacters="0123456789 :APM" />
     <Typography Id="Large" Font="verdana.ttf" Size="40" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
     <Typography Id="Small" Font="verdana.ttf" Size="10" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" />
+    <Typography Id="Medium" Font="comic.ttf" Size="14" Bpp="4" IsVector="no" Direction="LTR" FallbackCharacter="?" WidgetWildcardCharacters="0123456789." />
   </Typographies>
 </TextDatabase>

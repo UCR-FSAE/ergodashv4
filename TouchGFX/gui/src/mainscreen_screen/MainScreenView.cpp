@@ -32,16 +32,12 @@ void MainScreenView::tearDownScreen()
 }
 
 void MainScreenView::handleTickEvent() {
-	ActualTorqueText.setValue(RPMValue);
-	ActualTorqueGauge.setValue(RPMValue);
 	torqueCommandGauge.setValue(torque);
 	CommandedTorqueText.setValue(torque);
 	SOCText.setValue(soc);
 	SOCBox.setValue(soc);
 	DCBusVoltageProgess.setValue(voltage);
 
-	ActualTorqueText.invalidate();
-	ActualTorqueGauge.invalidate();
 	torqueCommandGauge.invalidate();
 	CommandedTorqueText.invalidate();
 	SOCText.invalidate();

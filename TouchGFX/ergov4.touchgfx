@@ -6,218 +6,281 @@
         "CanvasBufferSize": 7200,
         "Components": [
           {
-            "Type": "BoxProgress",
-            "Name": "SOCBox",
-            "X": 185,
-            "Y": 62,
-            "Width": 110,
-            "Height": 40,
-            "Visible": false,
+            "Type": "ScalableImage",
+            "Name": "BackgroundImage",
+            "Width": 480,
+            "Height": 281,
             "LockPosition": true,
-            "Color": {
-              "Red": 240,
-              "Green": 240,
-              "Blue": 22
-            },
-            "Direction": "Right",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_imageprogress_styled_batteries_battery_large.png",
-            "IndicatorPositionY": 5,
-            "IndicatorPositionWidth": 100,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 10
+            "Filename": "images.png",
+            "ScalingAlgorithm": "Nearest-neighbor"
           },
           {
-            "Type": "TextProgress",
-            "Name": "SOCText",
-            "X": 153,
-            "Y": 57,
+            "Type": "Container",
+            "Name": "SOCInfo",
+            "Y": 122,
+            "Width": 141,
+            "Height": 150,
+            "LockPosition": true,
+            "Components": [
+              {
+                "Type": "TextArea",
+                "Name": "BMSSOCText",
+                "X": 36,
+                "Y": 64,
+                "Width": 60,
+                "Height": 15,
+                "LockPosition": true,
+                "TextId": "__SingleUse_E6A4",
+                "TextRotation": "0",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "AutoSize": true
+              },
+              {
+                "Type": "CircleProgress",
+                "Name": "BMSStateofCharge",
+                "X": -9,
+                "Width": 150,
+                "Height": 150,
+                "LockPosition": true,
+                "Color": {
+                  "Green": 240,
+                  "Blue": 255
+                },
+                "CenterX": 75.0,
+                "CenterY": 75.0,
+                "Radius": 65.0,
+                "LineWidth": 20.0,
+                "EndAngle": 360.0,
+                "CapPrecision": "Butt",
+                "Preset": "alternate_theme\\presets\\circleprogress\\active_medium.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_circleprogress_backgrounds_medium.png",
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              }
+            ]
+          },
+          {
+            "Type": "ListLayout",
+            "Name": "TorqueInfo",
             "Width": 175,
-            "Height": 50,
-            "Visible": false,
+            "Height": 100,
             "LockPosition": true,
-            "TextId": "__SingleUse_SBPY",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
-            "IndicatorPositionX": 1,
-            "IndicatorPositionY": 10,
-            "IndicatorPositionWidth": 150,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 10
+            "Direction": "South",
+            "Components": [
+              {
+                "Type": "TextProgress",
+                "Name": "CommandedTorque",
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_HO6R",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              },
+              {
+                "Type": "TextProgress",
+                "Name": "ActualTorque",
+                "Y": 50,
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_TC47",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              }
+            ]
           },
           {
-            "Type": "TextArea",
-            "Name": "CommandedTorqueLabel",
-            "X": 33,
-            "Y": 123,
-            "Width": 125,
-            "Height": 48,
-            "LockPosition": true,
-            "TextId": "__SingleUse_UM3I",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "AutoSize": true
-          },
-          {
-            "Type": "TextProgress",
-            "Name": "CommandedTorqueText",
-            "X": 8,
-            "Y": 171,
-            "Width": 175,
-            "Height": 50,
-            "TextId": "__SingleUse_4YUZ",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
-            "IndicatorPositionX": 12,
-            "IndicatorPositionY": 10,
-            "IndicatorPositionWidth": 150,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 60
-          },
-          {
-            "Type": "CircleProgress",
-            "Name": "torqueCommandGauge",
-            "Y": 82,
-            "Width": 190,
-            "Height": 190,
-            "LockPosition": true,
-            "Color": {
-              "Green": 240,
-              "Blue": 255
-            },
-            "CenterX": 95.0,
-            "CenterY": 95.0,
-            "Radius": 85.0,
-            "LineWidth": 20.0,
-            "EndAngle": 360.0,
-            "CapPrecision": "Butt",
-            "Preset": "alternate_theme\\presets\\circleprogress\\active_large.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_circleprogress_backgrounds_large.png",
-            "ProgressRangeMax": 1000,
-            "ProgressInitialValue": 60
-          },
-          {
-            "Type": "TextArea",
-            "Name": "RPMLabel",
-            "X": 315,
-            "Y": 136,
-            "Width": 130,
-            "Height": 48,
-            "LockPosition": true,
-            "TextId": "__SingleUse_I6N0",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "AutoSize": true
-          },
-          {
-            "Type": "TextProgress",
-            "Name": "RPMText",
-            "X": 298,
-            "Y": 165,
-            "Width": 175,
-            "Height": 50,
-            "LockPosition": true,
-            "TextId": "__SingleUse_7GB0",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
-            "IndicatorPositionX": 12,
-            "IndicatorPositionY": 10,
-            "IndicatorPositionWidth": 150,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 60
-          },
-          {
-            "Type": "CircleProgress",
-            "Name": "RPMGauge",
-            "X": 290,
-            "Y": 82,
-            "Width": 190,
-            "Height": 190,
-            "LockPosition": true,
-            "Color": {
-              "Red": 254,
-              "Green": 189,
-              "Blue": 23
-            },
-            "CenterX": 95.0,
-            "CenterY": 95.0,
-            "Radius": 85.0,
-            "LineWidth": 20.0,
-            "EndAngle": 360.0,
-            "CapPrecision": "Butt",
-            "Preset": "alternate_theme\\presets\\circleprogress\\action_large.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_circleprogress_backgrounds_large.png",
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 10
-          },
-          {
-            "Type": "TextProgress",
-            "Name": "RuntimeText",
-            "Width": 175,
-            "Height": 50,
-            "Visible": false,
-            "LockPosition": true,
-            "TextId": "__SingleUse_LWLR",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
-            "IndicatorPositionX": 12,
-            "IndicatorPositionY": 10,
-            "IndicatorPositionWidth": 150,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 1000,
-            "ProgressInitialValue": 60
-          },
-          {
-            "Type": "TextProgress",
-            "Name": "DCBusVoltageProgess",
+            "Type": "ListLayout",
+            "Name": "TempInfo",
             "X": 305,
             "Width": 175,
-            "Height": 50,
+            "Height": 100,
             "LockPosition": true,
-            "TextId": "__SingleUse_YRPZ",
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
-            "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
-            "IndicatorPositionX": 12,
-            "IndicatorPositionY": 10,
-            "IndicatorPositionWidth": 150,
-            "IndicatorPositionHeight": 30,
-            "ProgressRangeMax": 100,
-            "ProgressInitialValue": 60
+            "Direction": "South",
+            "Components": [
+              {
+                "Type": "TextProgress",
+                "Name": "PackTemp",
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_2NOF",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              },
+              {
+                "Type": "TextProgress",
+                "Name": "MotorTemp",
+                "Y": 50,
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_PAWM",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              }
+            ]
+          },
+          {
+            "Type": "ListLayout",
+            "Name": "AmpInfo",
+            "X": 305,
+            "Y": 172,
+            "Width": 175,
+            "Height": 100,
+            "LockPosition": true,
+            "Direction": "South",
+            "Components": [
+              {
+                "Type": "TextProgress",
+                "Name": "PackAmp",
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_T9S5",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              },
+              {
+                "Type": "TextProgress",
+                "Name": "BMSAmp",
+                "Y": 50,
+                "Width": 175,
+                "Height": 50,
+                "LockPosition": true,
+                "TextId": "__SingleUse_XU7X",
+                "Color": {
+                  "Red": 255,
+                  "Green": 255,
+                  "Blue": 255
+                },
+                "Preset": "alternate_theme\\presets\\textprogress\\rounded.json",
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_textprogress_backgrounds_rounded_light.png",
+                "IndicatorPositionX": 12,
+                "IndicatorPositionY": 10,
+                "IndicatorPositionWidth": 150,
+                "IndicatorPositionHeight": 30,
+                "ProgressRangeMax": 100,
+                "ProgressInitialValue": 60
+              }
+            ]
+          },
+          {
+            "Type": "Container",
+            "Name": "SpeedInfo",
+            "X": 115,
+            "Y": 8,
+            "Width": 264,
+            "Height": 256,
+            "LockPosition": true,
+            "Components": [
+              {
+                "Type": "Gauge",
+                "Name": "SpeedGauge",
+                "X": 12,
+                "Y": 8,
+                "Width": 240,
+                "Height": 240,
+                "LockPosition": true,
+                "FileNameBackground": "__generated\\alternate_theme_images_widgets_gauge_medium_backgrounds_dark_filled.png",
+                "RotationCenterX": 120.0,
+                "RotationCenterY": 120.0,
+                "StartAngle": -113.0,
+                "EndAngle": 112.0,
+                "RangeMax": 100.0,
+                "InitialValue": 50.0,
+                "UseAnimation": true,
+                "Easing": "Linear",
+                "EasingOption": "In",
+                "FileNameNeedle": "__generated\\alternate_theme_images_widgets_gauge_medium_needles_smooth.png",
+                "NeedleRotationCenterX": 7.0,
+                "NeedleRotationCenterY": 67.0,
+                "NeedleMovingRenderingAlgorithm": "Bilinear Interpolation",
+                "NeedleSteadyRenderingAlgorithm": "Bilinear Interpolation",
+                "UseArc": true,
+                "ArcColor": {
+                  "Red": 20,
+                  "Green": 151,
+                  "Blue": 197
+                },
+                "ArcCapStyle": "Triangle",
+                "ArcOnTopOfNeedle": true
+              },
+              {
+                "Type": "DigitalClock",
+                "Name": "Runtime",
+                "X": 82,
+                "Y": 181,
+                "Width": 100,
+                "Height": 25,
+                "LockPosition": true,
+                "TextId": "__SingleUse_2JWP",
+                "DisplaySeconds": true,
+                "DisplayLeadingZeroForHourIndicator": true,
+                "InitialHour": 10,
+                "InitialMinute": 10
+              }
+            ]
           }
         ],
         "Interactions": []
