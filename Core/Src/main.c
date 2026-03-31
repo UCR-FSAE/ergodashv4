@@ -25,6 +25,8 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "FreeRTOS.h"
+#include "timers.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -120,7 +122,8 @@ extern void videoTaskFunc(void *argument);
 
 /* USER CODE BEGIN PFP */
 void GetManufacturerId (uint8_t *manufacturer_id);
-void EnableMemoryMappedMode(uint8_t manufacturer_id);  
+void EnableMemoryMappedMode(uint8_t manufacturer_id);
+void vSecondCallback( TimerHandle_t xTimer );
 
 /* USER CODE END PFP */
 
@@ -792,6 +795,10 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void vSecondCallback( TimerHandle_t xTimer ){
+	seconds++;
+}
+
 
 // Read manufacturer ID of external QSPI flash
 void GetManufacturerId (uint8_t *manufacturer_id)
@@ -868,30 +875,23 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN 5 */
     CAN_RxHeaderTypeDef rxHeader;
     uint8_t rxData[8];
-    uint32_t lastTick = HAL_GetTick();
+    // Create RTOS timer
+    xTimerHandle secondCounter = xTimerCreate(
+        "Timer1",         		 // Name
+        pdMS_TO_TICKS(1000),     // Period of 1000 ms
+        pdTRUE,                  // Repeating timer
+        (void*)0,                // Timer ID (optional)
+        vSecondCallback          // Callback function
+    );
+    xTimerStart(secondCounter, 0);
   /* Infinite loop */
   for(;;)
   {
-	  if(HAL_GetTick() - lastTick >= 1000){
-	      	seconds++;
-	      }
 	  // handle canbus reading here
 	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
+        // TODO: implement BMS, measured Torque from Inverter, State of Charge
 				switch (rxHeader.StdId) {
-//					case 0x202: //BMS
-//						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
-//					case 0x1A1: case 0x1A2:
-//					case 0x2A1: case 0x2A2:
-//					case 0x3A1: case 0x3A2:
-//					case 0x4A1: case 0x4A2:
-//					case 0x5A1: case 0x5A2:
-//					case 0x6A1: case 0x6A2:
-//					{
-//						temp = rxData[0]; //probably? maybe
-//						break;
-//					}
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
 						torque = rxData[0] | (rxData[1] << 8);
@@ -903,20 +903,10 @@ void StartDefaultTask(void *argument)
 						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
 						break;
 					}
-//
-//					case 0x0AC: // measured torque from Inverter
-//					{
-//						measuredTorque = rxData[2] | (rxData[3] << 8);
-//						break;
-//					}
 
 					case 0x0A5: //Motor Speed
 						speed = rxData[2] | (rxData[3] << 8);
 						break;
-
-//					case 0x6B0: //state of charge
-//						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
 				}
 			}
 

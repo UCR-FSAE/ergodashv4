@@ -10,6 +10,21 @@
       </Text>
     </TextGroup>
     <TextGroup Id="Unsorted">
+      <Text Id="__SingleUse_STOC" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">Signal3: &lt;&gt; Unit</Translation>
+      </Text>
+      <Text Id="__SingleUse_0CS4" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">Signal2: &lt;&gt; Unit</Translation>
+      </Text>
+      <Text Id="__SingleUse_O8HI" Alignment="Left" TypographyId="Medium">
+        <Translation Language="GB">Signal1: &lt;&gt; Unit</Translation>
+      </Text>
+      <Text Id="__SingleUse_S9NF" Alignment="Center" TypographyId="Medium">
+        <Translation Language="GB">EXIT</Translation>
+      </Text>
+      <Text Id="__SingleUse_9JHH" Alignment="Center" TypographyId="Medium">
+        <Translation Language="GB">DEBUG</Translation>
+      </Text>
       <Text Id="__SingleUse_E6A4" Alignment="Left" TypographyId="Medium">
         <Translation Language="GB">BMSSOC</Translation>
       </Text>
