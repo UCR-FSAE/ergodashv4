@@ -134,6 +134,7 @@ volatile uint8_t pack_soc = 0;
 volatile uint8_t soc = 0;
 volatile float voltage = 0.0;
 volatile uint16_t measuredTorque = 0;
+volatile uint16_t seconds = 0;
 /* USER CODE END 0 */
 
 /**
@@ -164,7 +165,6 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  HAL_CAN_Start(&hcan1);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -188,7 +188,7 @@ int main(void)
   /* Call PreOsInit function */
   MX_TouchGFX_PreOSInit();
   /* USER CODE BEGIN 2 */
-
+  HAL_CAN_Start(&hcan1);
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -868,10 +868,13 @@ void StartDefaultTask(void *argument)
   /* USER CODE BEGIN 5 */
     CAN_RxHeaderTypeDef rxHeader;
     uint8_t rxData[8];
-  
+    uint32_t lastTick = HAL_GetTick();
   /* Infinite loop */
   for(;;)
   {
+	  if(HAL_GetTick() - lastTick >= 1000){
+	      	seconds++;
+	      }
 	  // handle canbus reading here
 	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
@@ -891,15 +894,15 @@ void StartDefaultTask(void *argument)
 //					}
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
-						torque = rxData[3] | (rxData[4] << 8);
+						torque = rxData[0] | (rxData[1] << 8);
 						break;
 					}
 
-//					case 0x0A6: // measured DC Bus Voltage
-//					{
-//						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
-//						break;
-//					}
+					case 0x0A6: // measured DC Bus Voltage
+					{
+						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						break;
+					}
 //
 //					case 0x0AC: // measured torque from Inverter
 //					{
@@ -907,9 +910,10 @@ void StartDefaultTask(void *argument)
 //						break;
 //					}
 
-//					case 0x0A5: //Motor Speed
-//						speed = rxData[1] | (rxData[2] << 8); //what
-//						break;
+					case 0x0A5: //Motor Speed
+						speed = rxData[2] | (rxData[3] << 8);
+						break;
+
 //					case 0x6B0: //state of charge
 //						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
 //						break;

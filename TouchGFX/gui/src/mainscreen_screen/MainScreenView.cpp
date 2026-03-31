@@ -15,6 +15,7 @@ extern volatile uint16_t speed;
 extern volatile uint8_t pack_soc;
 extern volatile uint8_t soc;
 extern volatile float voltage;
+extern volatile uint16_t seconds;
 
 MainScreenView::MainScreenView()
 {
@@ -33,14 +34,16 @@ void MainScreenView::tearDownScreen()
 
 void MainScreenView::handleTickEvent() {
 	torqueCommandGauge.setValue(torque);
-	CommandedTorqueText.setValue(torque);
-	SOCText.setValue(soc);
-	SOCBox.setValue(soc);
+	//CommandedTorqueLabel.setValue(torque);
+	//SOCText.setValue(soc);
+	//SOCBox.setValue(soc);
 	DCBusVoltageProgess.setValue(voltage);
 
 	torqueCommandGauge.invalidate();
-	CommandedTorqueText.invalidate();
-	SOCText.invalidate();
-	SOCBox.invalidate();
+    //CommandedTorqueLabel.invalidate();
+	//SOCText.invalidate();
+	//SOCBox.invalidate();
 	DCBusVoltageProgess.invalidate();
+	RuntimeText.setValue(seconds);
+	RuntimeText.invalidate();
 }
