@@ -14,7 +14,6 @@ public:
     virtual void tearDownScreen();
     virtual void handleTickEvent();
 
-    uint32_t RPMValue;
 
 
 protected:
