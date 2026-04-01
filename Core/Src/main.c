@@ -130,12 +130,12 @@ void vSecondCallback( TimerHandle_t xTimer );
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 CAN_RxHeaderTypeDef RxHeader; 
-volatile uint8_t temp = 0;
-volatile uint16_t torque = 70;
+volatile uint8_t motorTemp = 0;
+volatile uint16_t requestedTorque = 70;
 volatile uint16_t speed = 0;
 volatile uint8_t pack_soc = 0;
 volatile uint8_t soc = 0;
-volatile float voltage = 0.0;
+volatile float packVoltage = 0.0;
 volatile uint16_t measuredTorque = 0;
 volatile uint16_t seconds = 0;
 /* USER CODE END 0 */
@@ -392,7 +392,7 @@ static void MX_CAN1_Init(void)
     // Bank 8: Motor speed + State of charge
     filterConfig.FilterBank = 8;
     filterConfig.FilterIdHigh = 0x0A5 << 5; // Motor Speed
-    filterConfig.FilterIdLow = 0x6B0 << 5; // State of Charge
+    filterConfig.FilterIdLow = 0x355 << 5; // State of Charge
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
 	
@@ -894,19 +894,39 @@ void StartDefaultTask(void *argument)
 				switch (rxHeader.StdId) {
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
-						torque = rxData[0] | (rxData[1] << 8);
+						requestedTorque = rxData[0] | (rxData[1] << 8);
 						break;
 					}
 
 					case 0x0A6: // measured DC Bus Voltage
 					{
-						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						packVoltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
 						break;
 					}
 
 					case 0x0A5: //Motor Speed
+					{
 						speed = rxData[2] | (rxData[3] << 8);
 						break;
+					}
+
+					case 0x355:
+					{
+						soc = rxData[0] | (rxData[1] << 8);
+						break;
+					}
+
+					case 0x0A2:
+					{
+						motorTemp = rxData[4] | (rxData[5] << 8);
+						break;
+					}
+
+					case 0x0AC:
+					{
+						measuredTorque = rxData[2] | (rxData[3] << 8);
+						break;
+					}
 				}
 			}
 

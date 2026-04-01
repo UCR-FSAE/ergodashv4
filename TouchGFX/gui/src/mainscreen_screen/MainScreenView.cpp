@@ -8,13 +8,13 @@ extern void CANPollingRoutine();
 
 */
 extern CAN_HandleTypeDef hcan1;
-extern volatile uint8_t temp;
-extern volatile uint16_t torque;
+extern volatile uint8_t motorTemp;
+extern volatile uint16_t requestedTorque;
 extern volatile uint16_t measuredTorque;
 extern volatile uint16_t speed;
 extern volatile uint8_t pack_soc;
 extern volatile uint8_t soc;
-extern volatile float voltage;
+extern volatile float packVoltage;
 extern volatile uint16_t seconds;
 uint8_t minutes = 0;
 uint8_t hours = 0;
@@ -43,7 +43,19 @@ void MainScreenView::handleTickEvent() {
 			hours++;
 			}
 	}
+	//    Widgets to be implemented
+	// SpeedGauge, BMSAmp,
+	// PackTemp, BMSStateofCharge
+	PackAmp.setValue(packVoltage);
+	MotorTemp.setValue(motorTemp);
+	ActualTorque.setValue(measuredTorque);
+	CommandedTorque.setValue(requestedTorque);
 	Runtime.setTime24Hour(hours,minutes,seconds);
+
+	PackAmp.invalidate();
+	MotorTemp.invalidate();
+	ActualTorque.invalidate();
+	CommandedTorque.invalidate();
 	Runtime.invalidate();
 
 }
