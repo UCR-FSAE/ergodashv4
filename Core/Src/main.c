@@ -138,6 +138,7 @@ volatile uint8_t soc = 0;
 volatile float packVoltage = 0.0;
 volatile uint16_t measuredTorque = 0;
 volatile uint16_t seconds = 0;
+volatile uint16_t temp = 0;
 /* USER CODE END 0 */
 
 /**
@@ -339,62 +340,28 @@ static void MX_CAN1_Init(void)
     filterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
     filterConfig.FilterActivation = ENABLE;
 
-    // Bank 0: BMS + Thermistor 1
+    // Bank 0: Motor temp + Requested Torque
     filterConfig.FilterBank = 0;
-    filterConfig.FilterIdHigh = 0x202 << 5;
-    filterConfig.FilterIdLow = 0x11 << 5;
-    // Mask fields are 0 (from init), effectively ID 0x000.
-    // It's better to verify they are 0 or use them for more IDs.
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 1: Thermistor 2 + 3
-    filterConfig.FilterBank = 1;
-    filterConfig.FilterIdHigh = 0x12 << 5;
-    filterConfig.FilterIdLow = 0x21 << 5;
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 2: Thermistor 4 + 5
-    filterConfig.FilterBank = 2;
-    filterConfig.FilterIdHigh = 0x22 << 5;
-    filterConfig.FilterIdLow = 0x31 << 5;
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 3: Thermistor 6 + 7
-    filterConfig.FilterBank = 3;
-    filterConfig.FilterIdHigh = 0x32 << 5;
-    filterConfig.FilterIdLow = 0x41 << 5;
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 4: Thermistor 8 + 9
-    filterConfig.FilterBank = 4;
-    filterConfig.FilterIdHigh = 0x42 << 5;
-    filterConfig.FilterIdLow = 0x51 << 5;
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 5: Thermistor 10 + 11
-    filterConfig.FilterBank = 5;
-    filterConfig.FilterIdHigh = 0x52 << 5;
-    filterConfig.FilterIdLow = 0x61 << 5;
-    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
-
-    // Bank 6: Thermistor 12 + Requested Torque
-    filterConfig.FilterBank = 6;
-    filterConfig.FilterIdHigh = 0x62 << 5;      // Thermistor 12
+    filterConfig.FilterIdHigh = 0x0A2 << 5;      // Motor Temp
     filterConfig.FilterIdLow = 0x0C0 << 5;       // Requested Torque
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-    // Bank 7: DC Voltage + Measured Torque
-    filterConfig.FilterBank = 7;
-    filterConfig.FilterIdHigh = 0x0A6 << 5;  //  DC Voltage
+    // Bank 1: Pack Voltage + Measured Torque
+    filterConfig.FilterBank = 1;
+    filterConfig.FilterIdHigh = 0x0A6 << 5;  //  Pack Voltage
     filterConfig.FilterIdLow = 0x0AC << 5;   // Measured Torque
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
-    // Bank 8: Motor speed + State of charge
-    filterConfig.FilterBank = 8;
+    // Bank 2: Motor speed + State of charge
+    filterConfig.FilterBank = 2;
     filterConfig.FilterIdHigh = 0x0A5 << 5; // Motor Speed
-    filterConfig.FilterIdLow = 0x355 << 5; // State of Charge
+    filterConfig.FilterIdLow = 0x6B0 << 5; // BMS State of Charge
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
+	// Bank 3: Pack temp
+	filterConfig.FilterBank = 3;
+    filterConfig.FilterIdHigh = 0x6B1 << 5; // Pack temp
+    HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 	
   /* USER CODE END CAN1_Init 2 */
 
