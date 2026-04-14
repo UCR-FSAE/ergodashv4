@@ -910,12 +910,6 @@ void StartDefaultTask(void *argument)
 						break;
 					}
 
-					case 0x355:
-					{
-						soc = rxData[0] | (rxData[1] << 8);
-						break;
-					}
-
 					case 0x0A2:
 					{
 						motorTemp = rxData[4] | (rxData[5] << 8);
@@ -926,6 +920,19 @@ void StartDefaultTask(void *argument)
 					{
 						measuredTorque = rxData[2] | (rxData[3] << 8);
 						break;
+					}
+
+					case 0x6B0:
+					{
+						packCurrent = rxData[0];
+						packSOC = rxData[4]; // use as BMS Soc
+						break;
+					}
+
+					case 0x6B1:
+					{
+						packHighTemp = rxData[4];
+						packLowTemp = rxData[5];
 					}
 				}
 			}
