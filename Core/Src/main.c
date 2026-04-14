@@ -133,12 +133,12 @@ CAN_RxHeaderTypeDef RxHeader;
 volatile uint8_t motorTemp = 0;
 volatile uint16_t requestedTorque = 70;
 volatile uint16_t speed = 0;
-volatile uint8_t pack_soc = 0;
-volatile uint8_t soc = 0;
+volatile uint8_t packSOC = 0;
+volatile uint16_t packCurrent = 0;
 volatile float packVoltage = 0.0;
 volatile uint16_t measuredTorque = 0;
+volatile uint16_t packTemp = 0;
 volatile uint16_t seconds = 0;
-volatile uint16_t temp = 0;
 /* USER CODE END 0 */
 
 /**
@@ -861,45 +861,45 @@ void StartDefaultTask(void *argument)
 				switch (rxHeader.StdId) {
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
-						requestedTorque = rxData[0] | (rxData[1] << 8);
+						requestedTorque = rxData[0] | (rxData[1] << 8) / 10;
 						break;
 					}
 
 					case 0x0A6: // measured DC Bus Voltage
 					{
-						packVoltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						// packVoltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
 						break;
 					}
 
 					case 0x0A5: //Motor Speed
 					{
-						speed = rxData[2] | (rxData[3] << 8);
+						speed = (rxData[2] | (rxData[3] << 8) * 16 * 3.14) / 1056;
 						break;
 					}
 
 					case 0x0A2:
 					{
-						motorTemp = rxData[4] | (rxData[5] << 8);
+						motorTemp = rxData[4] | (rxData[5] << 8) / 10;
 						break;
 					}
 
 					case 0x0AC:
 					{
-						measuredTorque = rxData[2] | (rxData[3] << 8);
+						measuredTorque = rxData[2] | (rxData[3] << 8) / 10;
 						break;
 					}
 
 					case 0x6B0:
 					{
-						packCurrent = rxData[0];
+						packCurrent = rxData[0] / 10;
 						packSOC = rxData[4]; // use as BMS Soc
+						packVoltage = ((float) (rxData[2])) / 10.0;
 						break;
 					}
 
 					case 0x6B1:
 					{
-						packHighTemp = rxData[4];
-						packLowTemp = rxData[5];
+						packTemp = rxData[4] / 10; //pack temp. bye 4 is high temp and byte 5 is low temp
 					}
 				}
 			}
