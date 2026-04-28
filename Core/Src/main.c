@@ -136,9 +136,11 @@ volatile uint16_t speed = 0;
 volatile uint8_t packSOC = 0;
 volatile uint16_t packCurrent = 0;
 volatile float packVoltage = 0.0;
+volatile uint16_t busVoltage = 0.0
 volatile uint16_t measuredTorque = 0;
 volatile uint16_t packTemp = 0;
 volatile uint16_t seconds = 0;
+volatile uint16_t bmsCurrent = 0;
 /* USER CODE END 0 */
 
 /**
@@ -348,7 +350,7 @@ static void MX_CAN1_Init(void)
 
     // Bank 1: Pack Voltage + Measured Torque
     filterConfig.FilterBank = 1;
-    filterConfig.FilterIdHigh = 0x0A6 << 5;  //  Pack Voltage
+    filterConfig.FilterIdHigh = 0x0A7 << 5;  //  DC Bus Voltage
     filterConfig.FilterIdLow = 0x0AC << 5;   // Measured Torque
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 
@@ -361,6 +363,7 @@ static void MX_CAN1_Init(void)
 	// Bank 3: Pack temp
 	filterConfig.FilterBank = 3;
     filterConfig.FilterIdHigh = 0x6B1 << 5; // Pack temp
+	filterConfig.FilterIdLow = 0x067 << 5; //placeholder BMS current
     HAL_CAN_ConfigFilter(&hcan1, &filterConfig);
 	
   /* USER CODE END CAN1_Init 2 */
@@ -865,9 +868,9 @@ void StartDefaultTask(void *argument)
 						break;
 					}
 
-					case 0x0A6: // measured DC Bus Voltage
+					case 0x0A7: // measured DC Bus Voltage
 					{
-						// packVoltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						busVoltage = ((float) (rxData[0] | (rxData[1] << 8))) / 10.0;
 						break;
 					}
 
@@ -900,6 +903,13 @@ void StartDefaultTask(void *argument)
 					case 0x6B1:
 					{
 						packTemp = rxData[4] / 10; //pack temp. bye 4 is high temp and byte 5 is low temp
+						break;
+					}
+					
+					case 0x067:
+					{
+						bmsCurrent = rxData[4] / 10; //placeholder bms amp
+						break;
 					}
 				}
 			}
