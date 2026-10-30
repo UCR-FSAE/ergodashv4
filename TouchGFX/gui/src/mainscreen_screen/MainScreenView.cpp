@@ -1,12 +1,10 @@
 #include <gui/mainscreen_screen/MainScreenView.hpp>
 
-/*
 extern CAN_HandleTypeDef hcan1;
 extern uint8_t CANValues[8];
 extern osSemaphoreId_t CANDataReadySemHandle;
 extern void CANPollingRoutine();
 
-*/
 extern CAN_HandleTypeDef hcan1;
 extern volatile uint8_t temp;
 extern volatile uint16_t torque;

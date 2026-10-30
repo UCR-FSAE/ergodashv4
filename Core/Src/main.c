@@ -876,43 +876,43 @@ void StartDefaultTask(void *argument)
 	  while (HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0) > 0) {
 			if (HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rxHeader, rxData) == HAL_OK) {
 				switch (rxHeader.StdId) {
-//					case 0x202: //BMS
-//						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
-//					case 0x1A1: case 0x1A2:
-//					case 0x2A1: case 0x2A2:
-//					case 0x3A1: case 0x3A2:
-//					case 0x4A1: case 0x4A2:
-//					case 0x5A1: case 0x5A2:
-//					case 0x6A1: case 0x6A2:
-//					{
-//						temp = rxData[0]; //probably? maybe
-//						break;
-//					}
+					case 0x202: //BMS
+						soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						break;
+					case 0x1A1: case 0x1A2:
+					case 0x2A1: case 0x2A2:
+					case 0x3A1: case 0x3A2:
+					case 0x4A1: case 0x4A2:
+					case 0x5A1: case 0x5A2:
+					case 0x6A1: case 0x6A2:
+					{
+						temp = rxData[0]; //probably? maybe
+						break;
+					}
 					case 0x0C0: // requested torque from VCU -> Inverter
 					{
 						torque = rxData[3] | (rxData[4] << 8);
 						break;
 					}
 
-//					case 0x0A6: // measured DC Bus Voltage
-//					{
-//						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
-//						break;
-//					}
-//
-//					case 0x0AC: // measured torque from Inverter
-//					{
-//						measuredTorque = rxData[2] | (rxData[3] << 8);
-//						break;
-//					}
+					case 0x0A6: // measured DC Bus Voltage
+					{
+						voltage = ((float) (rxData[6] | (rxData[7] << 8))) / 10.0;
+						break;
+					}
 
-//					case 0x0A5: //Motor Speed
-//						speed = rxData[1] | (rxData[2] << 8); //what
-//						break;
-//					case 0x6B0: //state of charge
-//						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
-//						break;
+					case 0x0AC: // measured torque from Inverter
+					{
+						measuredTorque = rxData[2] | (rxData[3] << 8);
+						break;
+					}
+
+					case 0x0A5: //Motor Speed
+						speed = rxData[1] | (rxData[2] << 8); //what
+						break;
+					case 0x6B0: //state of charge
+						pack_soc = rxData[3]; //byte 4 uhhhhhhhhhh prob need math here from CAN protocol thing
+						break;
 				}
 			}
 
